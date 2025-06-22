@@ -879,7 +879,7 @@
 </head>
 <body>
     <div class="header" id="header">
-        <h1 id="headerToggle">The Facility</h1>
+        <h1 id="headerToggle">harpoon</h1>
         <div class="path-indicator" id="pathIndicator">conversation thread: main</div>
         <div class="header-config">
             <textarea class="system-prompt" placeholder="system prompt">You are a helpful assistant.</textarea>
@@ -1847,7 +1847,7 @@
             // Create comprehensive export data including all paths and branch selections
             const exportData = {
                 metadata: {
-                    title: 'The Facility - Conversation Tree',
+                    title: 'harpoon - Conversation Tree',
                     exported: new Date().toISOString(),
                     systemPrompt: systemPromptInput.value.trim(),
                     currentPath: conversationTree.currentPath,
@@ -1985,7 +1985,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>The Facility - Conversation Tree</h1>
+        <h1>harpoon - Conversation Tree</h1>
         <p>Exported on ${new Date().toLocaleString()}</p>
         <p><strong>Active Path:</strong> ${data.metadata.currentPath}</p>
         ${data.metadata.branchSelection ? `<p><strong>Branch Selection:</strong> Message ${data.metadata.branchSelection.messageId}, Variant ${data.metadata.branchSelection.variantIndex + 1}</p>` : ''}
