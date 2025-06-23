@@ -1,6 +1,10 @@
 # harpoon
-deepseek R1 front end that is minimal in UX.
 
-the main function of this web application is that it can fork conversations visually.
+harpoon is an extremely parsed back Deepseek R1 frontend webapp, with only the basics needed.
 
-Sail the seas and hone in the whale you want with precision.
+!!! API keys are locally stored !!!
+
+```
+// Current: API key gets saved to localStorage
+localStorage.setItem('deepseekConversationTree', JSON.stringify(serializable));
+```
