@@ -29,16 +29,8 @@
             padding: 2rem 3rem 1.5rem 3rem;
             background: linear-gradient(180deg, rgba(26,26,26,0.95) 0%, rgba(26,26,26,0) 100%);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
-        }
-
-        /* Fallback for browsers that don't support backdrop-filter */
-        @supports not (backdrop-filter: blur(20px)) {
-            .header {
-                background: rgba(26,26,26,0.98);
-            }
         }
 
         .header.collapsed {
@@ -51,7 +43,8 @@
             color: #ffffff;
             margin-bottom: 2rem;
             letter-spacing: -0.02em;
-            opacity: 1; /* Remove animation dependency */
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
@@ -102,7 +95,8 @@
             min-height: 60px;
             font-family: inherit;
             transition: all 0.3s ease;
-            opacity: 1; /* Remove animation dependency */
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
         }
 
         .system-prompt:focus {
@@ -128,7 +122,8 @@
             margin-top: 1.5rem;
             font-family: inherit;
             transition: all 0.3s ease;
-            opacity: 1; /* Remove animation dependency */
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.4s forwards;
         }
 
         .api-key-input:focus {
@@ -149,7 +144,8 @@
             font-size: 0.9rem;
             font-weight: 300;
             margin-top: 2rem;
-            opacity: 1; /* Remove animation dependency */
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.6s forwards;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -371,18 +367,10 @@
             padding: 1rem 3rem 1.5rem 3rem;
             background: linear-gradient(0deg, rgba(26,26,26,0.95) 0%, rgba(26,26,26,0) 100%);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             display: flex;
             gap: 2rem;
             align-items: flex-end;
             position: relative;
-        }
-
-        /* Fallback for browsers that don't support backdrop-filter */
-        @supports not (backdrop-filter: blur(20px)) {
-            .input-area {
-                background: rgba(26,26,26,0.98);
-            }
         }
 
         /* Branch context indicator */
@@ -598,9 +586,13 @@
             font-size: 0.8rem;
             color: rgba(255,255,255,0.4);
             font-weight: 300;
-            opacity: 1; /* Always visible for debugging */
+            opacity: 0;
             transition: all 0.3s ease;
             pointer-events: none;
+        }
+
+        .header:not(.collapsed) .path-indicator {
+            opacity: 1;
         }
 
         .path-switcher {
@@ -714,4 +706,21 @@
         .branch-nav {
             display: flex;
             align-items: center;
-         
+            gap: 0.25rem;
+        }
+
+        .branch-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .branch-dot.active {
+            background: rgba(255,255,255,0.6);
+            transform: scale(1.2);
+        }
+
+        /* ======= ENHANCED 
