@@ -723,91 +723,85 @@
             transform: scale(1.2);
         }
 
-        /* Response variants inline display */
-        .response-variants {
-            margin-top: 1rem;
-        }
-
-        .response-variant {
+        /* ======= ENHANCED LAYERED VARIANTS SYSTEM ======= */
+        
+        /* Container for layered responses */
+        .variants-container {
             position: relative;
-            transition: all 0.5s ease;
+            min-height: 200px; /* Ensure space for layered effect */
             margin: 1rem 0;
-            cursor: pointer;
-            border-radius: 8px;
-            padding: 1rem;
-            border: 1px solid transparent;
         }
 
+        /* Individual variant layers */
+        .response-variant {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+            backface-visibility: hidden;
+            will-change: transform, opacity, filter;
+        }
+
+        /* Active variant (front layer) */
+        .response-variant.active {
+            opacity: 1;
+            transform: translateX(0) translateY(0) scale(1);
+            z-index: 10;
+            filter: blur(0px);
+        }
+
+        /* Inactive variants (heavily abstracted ghosts) - THE ENTIRE GHOST IS CLICKABLE */
         .response-variant:not(.active) {
-            opacity: 0.3;
-            transform: scale(0.98);
+            opacity: 0.05;
+            transform: translateX(150px) translateY(100px) scale(0.6);
+            z-index: 1;
+            filter: blur(6px);
+            pointer-events: all;
+            cursor: pointer;
         }
 
         .response-variant:not(.active):hover {
-            opacity: 0.6;
-            transform: scale(0.99);
-            border-color: rgba(255,255,255,0.1);
+            opacity: 0.15;
+            transform: translateX(140px) translateY(90px) scale(0.63);
+            filter: blur(3px);
         }
 
-        .response-variant.active {
-            opacity: 1;
-            transform: scale(1);
-            border-color: rgba(116, 59, 237, 0.3);
-            background: rgba(116, 59, 237, 0.05);
+        /* Second variant gets different offset so they don't overlap */
+        .response-variant:not(.active):nth-child(3) {
+            transform: translateX(180px) translateY(140px) scale(0.55);
         }
 
-        .response-variant.branch-selected {
-            border-color: rgba(116, 59, 237, 0.6);
-            background: rgba(116, 59, 237, 0.1);
-            box-shadow: 0 0 20px rgba(116, 59, 237, 0.15);
+        .response-variant:not(.active):nth-child(3):hover {
+            transform: translateX(170px) translateY(130px) scale(0.58);
         }
 
-        .variant-separator {
-            height: 1px;
-            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.1) 80%, transparent 100%);
-            margin: 2rem 0;
-            position: relative;
+        /* Branch selected variant gets subtle highlighting only when active */
+        .response-variant.branch-selected.active {
+            box-shadow: 0 0 20px rgba(116, 59, 237, 0.1);
         }
 
-        .variant-separator::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: -2px;
-            transform: translateX(-50%);
-            width: 8px;
-            height: 4px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 2px;
-        }
+        /* NO VARIANT INDICATORS - PURE GHOST INTERACTION */
 
-        .variant-indicator {
-            position: absolute;
-            top: -0.5rem;
-            right: 0;
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.4);
-            font-weight: 300;
-            pointer-events: none;
-            letter-spacing: 0.05em;
-        }
-
-        .response-variant.active .variant-indicator {
-            color: rgba(255,255,255,0.6);
-        }
-
-        .response-variant.branch-selected .variant-indicator {
-            color: rgba(116, 59, 237, 0.8);
-        }
-
-        /* Update message actions to be more subtle when variants exist */
+        /* Enhanced message actions for variants */
         .message.has-variants .message-actions {
-            opacity: 0.6;
+            position: relative;
+            z-index: 15;
+            margin-top: 2rem; /* Give space for the layered variants */
         }
 
-        .message.has-variants:hover .message-actions {
-            opacity: 1;
+        /* Smooth transitions for variant switching */
+        .variants-container.switching .response-variant {
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* ======= END LAYERED VARIANTS SYSTEM ======= */
 
         /* Custom scrollbar */
         ::-webkit-scrollbar {
@@ -873,6 +867,15 @@
             
             .message.assistant, .message.thinking {
                 margin-right: 10%;
+            }
+
+            /* Adjust layered effect for mobile - maintain dramatic offset */
+            .response-variant:not(.active) {
+                transform: translateX(100px) translateY(70px) scale(0.65);
+            }
+
+            .response-variant:not(.active):nth-child(3) {
+                transform: translateX(120px) translateY(100px) scale(0.6);
             }
         }
     </style>
@@ -1294,7 +1297,7 @@
             }, 200);
         }
 
-        // Enhanced function to add messages with inline variants and branch selection support
+        // Enhanced function to add messages with layered variants and branch selection support
         function addMessage(content, role, isThinking = false, isStreaming = false, messageId = null, variants = null) {
             const msgId = messageId || `msg_${++conversationTree.messageIdCounter}`;
             
@@ -1318,9 +1321,9 @@
                 }
             } else {
                 if (role === 'assistant' && !isThinking) {
-                    // For assistant messages, handle variants inline
+                    // For assistant messages, handle variants with layered visual system
                     if (variants && variants.length > 1) {
-                        contentDiv.innerHTML = createVariantsHTML(variants, msgId);
+                        contentDiv.innerHTML = createLayeredVariantsHTML(variants, msgId);
                         messageDiv.classList.add('has-variants');
                     } else {
                         contentDiv.innerHTML = marked.parse(content);
@@ -1360,49 +1363,79 @@
             return { element: messageDiv, id: msgId };
         }
 
-        // Enhanced function to create inline variants HTML with branch selection
-        function createVariantsHTML(variants, messageId) {
-            return variants.map((variant, index) => {
-                const isActive = index === 0; // First variant is active by default
-                return `
-                    <div class="response-variant ${isActive ? 'active' : ''}" 
-                         onclick="selectVariantForBranch('${messageId}', ${index})"
-                         data-variant-index="${index}">
-                        <div class="variant-indicator">${index + 1} of ${variants.length}</div>
-                        ${marked.parse(variant.content)}
-                        ${index < variants.length - 1 ? '<div class="variant-separator"></div>' : ''}
-                    </div>
-                `;
-            }).join('');
+        // Enhanced function to create layered variants HTML - pure ghost interaction
+        function createLayeredVariantsHTML(variants, messageId) {
+            const containerDiv = document.createElement('div');
+            containerDiv.className = 'variants-container';
+            
+            variants.forEach((variant, index) => {
+                const variantDiv = document.createElement('div');
+                variantDiv.className = `response-variant ${index === 0 ? 'active' : ''}`;
+                variantDiv.dataset.variantIndex = index;
+                variantDiv.onclick = () => selectVariantForBranch(messageId, index);
+                
+                // Add variant content - NO BADGES, PURE CONTENT
+                const contentDiv = document.createElement('div');
+                contentDiv.innerHTML = marked.parse(variant.content);
+                variantDiv.appendChild(contentDiv);
+                
+                containerDiv.appendChild(variantDiv);
+            });
+            
+            return containerDiv.outerHTML;
         }
 
-        // Function to select a variant for branching (enhanced from activateVariant)
+        // Function to select a variant and update conversation state
         function selectVariantForBranch(messageId, variantIndex) {
             const messageEl = document.querySelector(`[data-message-id="${messageId}"]`);
             if (!messageEl) return;
             
-            // Check if this variant is already selected for branching
-            const currentSelection = conversationTree.branchSelection;
-            const isSameSelection = currentSelection && 
-                currentSelection.messageId === messageId && 
-                currentSelection.variantIndex === variantIndex;
+            const variantsContainer = messageEl.querySelector('.variants-container');
+            if (!variantsContainer) return;
             
-            if (isSameSelection) {
-                // Deselect if clicking the same variant
-                clearBranchSelection();
-                return;
+            // Get the variants for this message
+            const variants = conversationTree.branches.get(messageId);
+            if (!variants || !variants[variantIndex]) return;
+            
+            // Add switching class for enhanced transitions
+            variantsContainer.classList.add('switching');
+            
+            // Update the conversation tree to use the selected variant
+            const currentPath = getCurrentPath();
+            const messageIndex = currentPath.findIndex(msg => msg.id === messageId);
+            
+            if (messageIndex !== -1) {
+                // Replace the message in the current path with the selected variant
+                const updatedPath = [...currentPath];
+                updatedPath[messageIndex] = variants[variantIndex];
+                updateCurrentPath(updatedPath);
+                conversationTree.messages = updatedPath;
             }
             
             // Set this variant as the branch selection point
             setBranchSelection(messageId, variantIndex);
             
-            // Update visual active state for variants
-            const variants = messageEl.querySelectorAll('.response-variant');
-            variants.forEach((variant, index) => {
-                variant.classList.toggle('active', index === variantIndex);
+            // Update visual layered state for variants with smooth transitions
+            const variantElements = variantsContainer.querySelectorAll('.response-variant');
+            variantElements.forEach((variant, index) => {
+                // Remove active class from all
+                variant.classList.remove('active');
+                
+                // Add active class to selected variant after a brief delay for smooth transition
+                if (index === variantIndex) {
+                    setTimeout(() => {
+                        variant.classList.add('active');
+                    }, 50);
+                }
             });
             
-            console.log(`Selected variant ${variantIndex + 1} of message ${messageId} for branching`);
+            // Remove switching class after transition
+            setTimeout(() => {
+                variantsContainer.classList.remove('switching');
+                saveConversationTree(); // Save the updated state
+            }, 800);
+            
+            console.log(`Switched to variant ${variantIndex + 1} of message ${messageId}`);
         }
 
         // Enhanced function to send a message with branch-aware logic
@@ -1477,7 +1510,7 @@
             }
         }
 
-        // Enhanced redo function with inline variants for branch-aware conversations
+        // Enhanced redo function with layered variants for branch-aware conversations
         async function redoResponse(messageId) {
             if (isLoading) return;
             
@@ -1580,15 +1613,24 @@
                 variants.push(newVariant);
                 conversationTree.branches.set(messageId, variants);
                 
-                // Re-render the message with all variants
+                // Re-render the message with layered variants
                 const contentDiv = messageEl.querySelector('.message-content');
-                contentDiv.innerHTML = createVariantsHTML(variants, messageId);
+                contentDiv.innerHTML = createLayeredVariantsHTML(variants, messageId);
                 messageEl.classList.add('has-variants');
                 
-                // Automatically select the new variant for branching
+                // Automatically select the new variant for branching with smooth transition
                 setTimeout(() => {
                     setBranchSelection(messageId, variants.length - 1);
-                }, 100);
+                    
+                    // Ensure the new variant appears as active in the layered display
+                    const variantsContainer = contentDiv.querySelector('.variants-container');
+                    if (variantsContainer) {
+                        const variantElements = variantsContainer.querySelectorAll('.response-variant');
+                        variantElements.forEach((el, idx) => {
+                            el.classList.toggle('active', idx === variants.length - 1);
+                        });
+                    }
+                }, 200);
                 
                 // Save the updated conversation tree
                 saveConversationTree();
