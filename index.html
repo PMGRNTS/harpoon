@@ -51,8 +51,7 @@
             color: #ffffff;
             margin-bottom: 2rem;
             letter-spacing: -0.02em;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
+            opacity: 1; /* Remove animation dependency */
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
@@ -103,8 +102,7 @@
             min-height: 60px;
             font-family: inherit;
             transition: all 0.3s ease;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.2s forwards;
+            opacity: 1; /* Remove animation dependency */
         }
 
         .system-prompt:focus {
@@ -130,8 +128,7 @@
             margin-top: 1.5rem;
             font-family: inherit;
             transition: all 0.3s ease;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.4s forwards;
+            opacity: 1; /* Remove animation dependency */
         }
 
         .api-key-input:focus {
@@ -152,8 +149,7 @@
             font-size: 0.9rem;
             font-weight: 300;
             margin-top: 2rem;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.6s forwards;
+            opacity: 1; /* Remove animation dependency */
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -602,13 +598,9 @@
             font-size: 0.8rem;
             color: rgba(255,255,255,0.4);
             font-weight: 300;
-            opacity: 0;
+            opacity: 1; /* Always visible for debugging */
             transition: all 0.3s ease;
             pointer-events: none;
-        }
-
-        .header:not(.collapsed) .path-indicator {
-            opacity: 1;
         }
 
         .path-switcher {
@@ -715,4 +707,11 @@
             color: rgba(255,255,255,0.3);
             font-weight: 300;
             display: flex;
-            align-items
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .branch-nav {
+            display: flex;
+            align-items: center;
+         
