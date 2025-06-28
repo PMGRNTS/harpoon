@@ -29,8 +29,16 @@
             padding: 2rem 3rem 1.5rem 3rem;
             background: linear-gradient(180deg, rgba(26,26,26,0.95) 0%, rgba(26,26,26,0) 100%);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
+        }
+
+        /* Fallback for browsers that don't support backdrop-filter */
+        @supports not (backdrop-filter: blur(20px)) {
+            .header {
+                background: rgba(26,26,26,0.98);
+            }
         }
 
         .header.collapsed {
@@ -367,10 +375,18 @@
             padding: 1rem 3rem 1.5rem 3rem;
             background: linear-gradient(0deg, rgba(26,26,26,0.95) 0%, rgba(26,26,26,0) 100%);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex;
             gap: 2rem;
             align-items: flex-end;
             position: relative;
+        }
+
+        /* Fallback for browsers that don't support backdrop-filter */
+        @supports not (backdrop-filter: blur(20px)) {
+            .input-area {
+                background: rgba(26,26,26,0.98);
+            }
         }
 
         /* Branch context indicator */
@@ -699,28 +715,4 @@
             color: rgba(255,255,255,0.3);
             font-weight: 300;
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .branch-nav {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .branch-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .branch-dot.active {
-            background: rgba(255,255,255,0.6);
-            transform: scale(1.2);
-        }
-
-        /* ======= ENHANCED 
+            align-items
