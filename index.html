@@ -723,7 +723,7 @@
             transform: scale(1.2);
         }
 
-        /* ======= ENHANCED LAYERED VARIANTS SYSTEM ======= */
+        /* ======= ENHANCED LAYERED VARIANTS SYSTEM WITH GRADUATED FADING ======= */
         
         /* Container for layered responses */
         .variants-container {
@@ -757,29 +757,99 @@
             filter: blur(0px);
         }
 
-        /* Inactive variants (heavily abstracted ghosts) - THE ENTIRE GHOST IS CLICKABLE */
-        .response-variant:not(.active) {
-            opacity: 0.05;
-            transform: translateX(150px) translateY(100px) scale(0.6);
-            z-index: 1;
+        /* GRADUATED FADING LEVELS FOR INACTIVE VARIANTS */
+        
+        /* Most recent previous variant (fade-level-1) */
+        .response-variant.fade-level-1 {
+            opacity: 0.25;
+            transform: translateX(120px) translateY(80px) scale(0.75);
+            z-index: 8;
+            filter: blur(2px);
+            pointer-events: all;
+            cursor: pointer;
+        }
+
+        .response-variant.fade-level-1:hover {
+            opacity: 0.45;
+            transform: translateX(110px) translateY(70px) scale(0.78);
+            filter: blur(1px);
+        }
+
+        /* Second previous variant (fade-level-2) */
+        .response-variant.fade-level-2 {
+            opacity: 0.15;
+            transform: translateX(150px) translateY(100px) scale(0.65);
+            z-index: 6;
+            filter: blur(4px);
+            pointer-events: all;
+            cursor: pointer;
+        }
+
+        .response-variant.fade-level-2:hover {
+            opacity: 0.35;
+            transform: translateX(140px) translateY(90px) scale(0.68);
+            filter: blur(2px);
+        }
+
+        /* Third previous variant (fade-level-3) */
+        .response-variant.fade-level-3 {
+            opacity: 0.08;
+            transform: translateX(180px) translateY(130px) scale(0.55);
+            z-index: 4;
             filter: blur(6px);
             pointer-events: all;
             cursor: pointer;
         }
 
-        .response-variant:not(.active):hover {
-            opacity: 0.15;
-            transform: translateX(140px) translateY(90px) scale(0.63);
+        .response-variant.fade-level-3:hover {
+            opacity: 0.25;
+            transform: translateX(170px) translateY(120px) scale(0.58);
             filter: blur(3px);
         }
 
-        /* Second variant gets different offset so they don't overlap */
-        .response-variant:not(.active):nth-child(3) {
-            transform: translateX(180px) translateY(140px) scale(0.55);
+        /* Oldest variants (fade-level-4+) - heavily faded */
+        .response-variant.fade-level-4,
+        .response-variant.fade-level-5,
+        .response-variant.fade-level-6 {
+            opacity: 0.03;
+            transform: translateX(200px) translateY(160px) scale(0.45);
+            z-index: 2;
+            filter: blur(8px);
+            pointer-events: all;
+            cursor: pointer;
         }
 
-        .response-variant:not(.active):nth-child(3):hover {
-            transform: translateX(170px) translateY(130px) scale(0.58);
+        .response-variant.fade-level-4:hover,
+        .response-variant.fade-level-5:hover,
+        .response-variant.fade-level-6:hover {
+            opacity: 0.15;
+            transform: translateX(190px) translateY(150px) scale(0.48);
+            filter: blur(4px);
+        }
+
+        /* Stagger oldest variants slightly to avoid complete overlap */
+        .response-variant.fade-level-5 {
+            transform: translateX(210px) translateY(170px) scale(0.43);
+        }
+
+        .response-variant.fade-level-6 {
+            transform: translateX(220px) translateY(180px) scale(0.41);
+        }
+
+        /* Fallback for any variants beyond level 6 */
+        .response-variant:not(.active):not([class*="fade-level"]) {
+            opacity: 0.02;
+            transform: translateX(230px) translateY(190px) scale(0.4);
+            z-index: 1;
+            filter: blur(10px);
+            pointer-events: all;
+            cursor: pointer;
+        }
+
+        .response-variant:not(.active):not([class*="fade-level"]):hover {
+            opacity: 0.1;
+            transform: translateX(220px) translateY(180px) scale(0.43);
+            filter: blur(5px);
         }
 
         /* Branch selected variant gets subtle highlighting only when active */
